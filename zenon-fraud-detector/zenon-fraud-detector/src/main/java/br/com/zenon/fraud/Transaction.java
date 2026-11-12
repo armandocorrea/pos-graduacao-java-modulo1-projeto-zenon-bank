@@ -1,0 +1,12 @@
+package br.com.zenon.fraud;
+
+import java.math.BigDecimal;
+
+public record Transaction(
+        int step,
+        Type type,
+        BigDecimal amount,
+        Customer customer,
+        Destination destination,
+        boolean isFraud,
+        boolean isFlaggedFraud) {}
