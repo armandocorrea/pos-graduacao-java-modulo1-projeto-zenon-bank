@@ -6,7 +6,7 @@ public record Transaction(
         int step,
         Type type,
         BigDecimal amount,
-        Customer customer,
-        Destination destination,
+        Customer origin,
+        Customer destination,
         boolean isFraud,
         boolean isFlaggedFraud) {}
