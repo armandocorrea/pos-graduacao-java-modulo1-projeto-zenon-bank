@@ -7,6 +7,6 @@ public record Transaction(
         Type type,
         BigDecimal amount,
         Customer origin,
-        Customer destination,
+        Customer recipient,
         boolean isFraud,
         boolean isFlaggedFraud) {}

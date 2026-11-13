@@ -1,38 +1,31 @@
 package br.com.zenon;
 
-import br.com.zenon.fraud.Customer;
 import br.com.zenon.fraud.Transaction;
-import br.com.zenon.fraud.Type;
+import br.com.zenon.fraud.TransactionIngestor;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 public class Main {
 
     void main() {
-        var transaction01 = new Transaction(
-                1,
-                Type.PAYMENT,
-                new BigDecimal("9839.64"),
-                new Customer("C1231006815", new BigDecimal("170136.0"), new BigDecimal("160296.36")),
-                new Customer("M1979787155", new BigDecimal(0), new BigDecimal(0)),
-                false,
-                false);
 
-        var transaction02 = new Transaction(
-                743,
-                Type.CASH_OUT,
-                new BigDecimal("850002.52"),
-                new Customer("C1280323807", new BigDecimal("850002.52"), new BigDecimal(0)),
-                new Customer("C873221189", new BigDecimal("6510099.11"), new BigDecimal("7360101.63")),
-                true,
-                false);
+        List<Transaction> transactions =
+            TransactionIngestor.retornarTransacoes("data/PS_20174392719_1491204439457_log.csv");
 
-        IO.println("Transação 1: ");
-        IO.println(transaction01.toString());
+        List<Transaction> transactions2 =
+            TransactionIngestor.retornarTransacoesModerno("data/PS_20174392719_1491204439457_log.csv");
 
-        IO.println("----");
+        List<Transaction> transactions3 =
+            TransactionIngestor.retornarTransacoesOldSchool("data/PS_20174392719_1491204439457_log.csv");
 
-        IO.println("Transação 2: ");
-        IO.println(transaction02.toString());
+
+        IO.println("Antigo");
+        transactions.stream().limit(10).forEach(IO::println);
+
+        IO.println("Moderno");
+        transactions2.stream().limit(10).forEach(IO::println);
+
+        IO.println("Bem Antigo");
+        transactions3.stream().limit(10).forEach(IO::println);
     }
 }
