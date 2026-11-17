@@ -4,10 +4,7 @@ import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class TransactionIngestor {
@@ -65,7 +62,7 @@ public class TransactionIngestor {
 
         try (var linhas = Files.lines(Path.of(nomeArquivo))) {
             linhas.skip(1)
-                .limit(1000)
+                .limit(50000)
                 .forEach(linha -> addTransaction(linha, transactions));
         } catch (Exception e) {
             throw new RuntimeException("Erro ao ler o arquivo: " + e.getMessage());
@@ -84,8 +81,8 @@ public class TransactionIngestor {
                     new BigDecimal(colunas[2]),
                     new Customer(colunas[3], new BigDecimal(colunas[4]), new BigDecimal(colunas[5])),
                     new Customer(colunas[6], new BigDecimal(colunas[7]), new BigDecimal(colunas[8])),
-                    Boolean.parseBoolean(colunas[9]),
-                    Boolean.parseBoolean(colunas[10])
+                    (!Objects.equals(colunas[9], "0")),
+                    (!Objects.equals(colunas[10], "0"))
                 ));
         } catch (Exception e) {
             System.err.println("Erro: " + linha + " | " + e);
