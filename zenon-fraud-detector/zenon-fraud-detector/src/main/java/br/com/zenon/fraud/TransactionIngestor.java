@@ -62,7 +62,7 @@ public class TransactionIngestor {
 
         try (var linhas = Files.lines(Path.of(nomeArquivo))) {
             linhas.skip(1)
-                .limit(50000)
+                .limit(100000)
                 .forEach(linha -> addTransaction(linha, transactions));
         } catch (Exception e) {
             throw new RuntimeException("Erro ao ler o arquivo: " + e.getMessage());
