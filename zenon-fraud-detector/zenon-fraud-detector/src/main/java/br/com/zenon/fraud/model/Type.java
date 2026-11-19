@@ -1,4 +1,4 @@
-package br.com.zenon.fraud;
+package br.com.zenon.fraud.model;
 
 public enum Type {
     CASH_IN,
