@@ -1,16 +1,17 @@
-package br.com.zenon.fraud;
+package br.com.zenon.fraud.repository;
+
+import br.com.zenon.fraud.model.Transaction;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class TransactionListRepository2 implements TransactionListRepositoryInterface {
+public class TransactionListRepositoryPerformatico implements TransactionListRepositoryInterface {
 
     private Map<String, Transaction> mapTransaction = new HashMap<>();
 
-    public TransactionListRepository2(List<Transaction> transaction) {
+    public TransactionListRepositoryPerformatico(List<Transaction> transaction) {
         transaction.forEach(t -> mapTransaction.put(t.origin().name(), t));
     }
 
