@@ -21,4 +21,15 @@ public class TransactionListRepository implements TransactionRepository {
             .filter(transaction -> transaction.origin().name().equals(originName))
             .findFirst();
     }
+
+    @Override
+    public void save(Transaction transaction) {
+        throw new RuntimeException("Método não suportado");
+    }
+
+    @Override
+    public void save(List<Transaction> transactions) {
+        throw new RuntimeException("Método não suportado");
+    }
+
 }
