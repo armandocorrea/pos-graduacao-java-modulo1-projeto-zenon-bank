@@ -3,33 +3,22 @@ package br.com.zenon.fraud.repository;
 import br.com.zenon.fraud.model.Transaction;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-public class TransactionListRepository implements TransactionListRepositoryInterface {
+public class TransactionListRepository implements TransactionRepository {
 
     private final List<Transaction> transactions;
 
     public TransactionListRepository(List<Transaction> transactions) {
+        Objects.requireNonNull(transactions);
         this.transactions = transactions;
     }
 
     @Override
-    public Optional<Transaction> findByNameOrigin(String name) {
-        return Optional.of(transactions.stream()
-            .filter(transaction -> transaction.origin().name().equals(name))
-            .findFirst().orElseThrow(() -> new RuntimeException("Transação não encontrada para o cliente: " + name)));
+    public Optional<Transaction> findByOriginName(String originName) {
+        return transactions.stream()
+            .filter(transaction -> transaction.origin().name().equals(originName))
+            .findFirst();
     }
-
-    @Override
-    public Optional<Transaction> findByLastTransactionByNameOrigin(String name) {
-        List<Transaction> filtrado =
-            transactions.stream()
-                .filter(transaction -> transaction.origin().name().equals(name))
-                .toList();
-
-        return Optional.of(Optional.of(filtrado.get(filtrado.size() - 1))
-            .orElseThrow(() -> new RuntimeException("Transação não encontrada para o cliente: " + name)));
-    }
-
-
 }

@@ -3,8 +3,8 @@ package br.com.zenon;
 import br.com.zenon.fraud.model.Transaction;
 import br.com.zenon.fraud.model.Type;
 import br.com.zenon.fraud.repository.TransactionListRepository;
-import br.com.zenon.fraud.repository.TransactionListRepositoryPerformatico;
-import br.com.zenon.fraud.repository.TransactionListRepositoryInterface;
+import br.com.zenon.fraud.repository.TransactionMapRepository;
+import br.com.zenon.fraud.repository.TransactionRepository;
 import br.com.zenon.fraud.service.FraudAnalyzer;
 import br.com.zenon.fraud.service.TransactionIngestor;
 
@@ -41,23 +41,41 @@ public class Main {
         IO.println("Prejuízo Total: ");
         fraudCountByType.forEach((type, count) -> IO.println("- %s: %d".formatted(type, count)));
 
-        /*
-        TransactionListRepositoryInterface transactionListRepository = new TransactionListRepository(transactions);
-        IO.println(transactionListRepository.findByNameOrigin("C1231006815").get());
-        //IO.println(transactionListRepository.findByNameOrigin("C12345").get());
+        IO.println("");
+        IO.println("======BENCHMARK======");
+
+        TransactionRepository transactionRepository;
+
+        transactionRepository = new TransactionListRepository(transactions);
+        transactionRepository.findByOriginName("C1231006815")
+            .ifPresentOrElse(IO::println,
+                () -> IO.println("Transação não encontrada para o OriginName: C1231006815"));
+        transactionRepository.findByOriginName("C12345")
+            .ifPresentOrElse(IO::println,
+                () -> IO.println("Transação não encontrada para o OriginName: C12345"));
 
         var inicio = System.nanoTime();
-        IO.println(transactionListRepository.findByLastTransactionByNameOrigin("C1868032458").get());
-        var total = System.nanoTime() - inicio;
-        IO.println("Tempo: " + total);
+        transactionRepository.findByOriginName("C1868032458")
+            .ifPresentOrElse(IO::println,
+                () -> IO.println("Transação não encontrada para o OriginName: C1868032458"));
+        var total = (System.nanoTime() - inicio) / 1_000_000.0;
+        IO.println("Tempo List em (ms): " + total);
 
-        TransactionListRepositoryInterface transactionListRepository2 = new TransactionListRepositoryPerformatico(transactions);
-        IO.println(transactionListRepository2.findByNameOrigin("C1231006815").get());
-        //IO.println(transactionListRepository.findByNameOrigin("C12345").get());
+        IO.println("");
+
+        transactionRepository = new TransactionMapRepository(transactions);
+        transactionRepository.findByOriginName("C1231006815")
+            .ifPresentOrElse(IO::println,
+                () -> IO.println("Transação não encontrada para o OriginName: C1231006815"));
+        transactionRepository.findByOriginName("C12345")
+            .ifPresentOrElse(IO::println,
+                () -> IO.println("Transação não encontrada para o OriginName: C12345"));
 
         inicio = System.nanoTime();
-        IO.println(transactionListRepository2.findByLastTransactionByNameOrigin("C1868032458").get());
-        total = System.nanoTime() - inicio;
-        IO.println("Tempo: " + total);*/
+        transactionRepository.findByOriginName("C1868032458")
+            .ifPresentOrElse(IO::println,
+                () -> IO.println("Transação não encontrada para o OriginName: C1868032458"));
+        total = (System.nanoTime() - inicio) / 1_000_000.0;
+        IO.println("Tempo Map em (ms): " + total);
     }
 }
