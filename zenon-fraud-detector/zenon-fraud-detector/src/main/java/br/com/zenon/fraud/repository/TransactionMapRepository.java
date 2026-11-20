@@ -26,4 +26,14 @@ public class TransactionMapRepository implements TransactionRepository {
     public Optional<Transaction> findByOriginName(String originName) {
         return Optional.ofNullable(transactionByOriginName.get(originName));
     }
+
+    @Override
+    public void save(Transaction transaction) {
+        throw new RuntimeException("Método não suportado");
+    }
+
+    @Override
+    public void save(List<Transaction> transactions) {
+        throw new RuntimeException("Método não suportado");
+    }
 }
