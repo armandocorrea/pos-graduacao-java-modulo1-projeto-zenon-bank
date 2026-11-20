@@ -17,8 +17,10 @@ public class TransactionIngestor {
     public static List<Transaction> retornarTransacoes(String nomeArquivo)  {
         List<Transaction> transactions = new ArrayList<>();
 
-        try (var linhas = Files.lines(Path.of(nomeArquivo))) {
-            linhas.skip(1)
+        try {
+            var linhas = Files.readAllLines(Path.of(nomeArquivo));
+            linhas.stream()
+                .skip(1)
                 .limit(FRAUD_LIMIT)
                 .forEach(linha -> addTransaction(linha, transactions));
         } catch (Exception e) {
