@@ -12,7 +12,7 @@ import java.util.*;
 
 public class TransactionIngestor {
 
-    private static final Integer FRAUD_LIMIT = 50_000;
+    private static final Integer FRAUD_LIMIT = 100_000;
 
     public static List<Transaction> retornarTransacoes(String nomeArquivo)  {
         List<Transaction> transactions = new ArrayList<>();
