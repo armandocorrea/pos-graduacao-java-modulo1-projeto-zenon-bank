@@ -2,7 +2,6 @@ package br.com.zenon;
 
 import br.com.zenon.fraud.dao.CustomerDAO;
 import br.com.zenon.fraud.dao.TransactionDAO;
-import br.com.zenon.fraud.dao.ZenonConnection;
 import br.com.zenon.fraud.model.Transaction;
 import br.com.zenon.fraud.repository.TransactionRepository;
 import br.com.zenon.fraud.repository.TransactionSQLRepository;
@@ -40,9 +39,8 @@ public class DBMain {
     }
 
     private TransactionRepository repository() {
-        ZenonConnection zenonConnection = new ZenonConnection();
         CustomerDAO customerDAO = new CustomerDAO();
         TransactionDAO transactionDAO = new TransactionDAO(customerDAO);
-        return new TransactionSQLRepository(zenonConnection, transactionDAO);
+        return new TransactionSQLRepository(transactionDAO);
     }
 }

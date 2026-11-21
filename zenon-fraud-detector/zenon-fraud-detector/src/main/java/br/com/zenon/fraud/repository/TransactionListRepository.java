@@ -24,12 +24,12 @@ public class TransactionListRepository implements TransactionRepository {
 
     @Override
     public void save(Transaction transaction) {
-        throw new RuntimeException("Método não suportado");
+        this.transactions.add(transaction);
     }
 
     @Override
     public void save(List<Transaction> transactions) {
-        throw new RuntimeException("Método não suportado");
+        this.transactions.addAll(transactions);
     }
 
 }

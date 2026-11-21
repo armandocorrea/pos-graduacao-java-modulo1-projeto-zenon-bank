@@ -29,11 +29,13 @@ public class TransactionMapRepository implements TransactionRepository {
 
     @Override
     public void save(Transaction transaction) {
-        throw new RuntimeException("Método não suportado");
+        this.transactionByOriginName.putIfAbsent(transaction.origin().name(), transaction);
     }
 
     @Override
     public void save(List<Transaction> transactions) {
-        throw new RuntimeException("Método não suportado");
+        transactions
+            .forEach(transaction ->
+                this.transactionByOriginName.putIfAbsent(transaction.origin().name(), transaction));
     }
 }

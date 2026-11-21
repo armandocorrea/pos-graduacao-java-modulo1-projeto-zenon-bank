@@ -5,6 +5,7 @@ import br.com.zenon.fraud.model.Transaction;
 import br.com.zenon.fraud.model.Type;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionDAO {
@@ -31,11 +32,13 @@ public class TransactionDAO {
     }
 
     public void inserirLoteTransaction(Connection conn, List<Transaction> transactionList) throws SQLException {
+        inserirOrigins(conn, transactionList);
+        inserirRecipients(conn, transactionList);
+
         try (conn;
              PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
 
             conn.setAutoCommit(false);
-            int batchSize = 500;
 
             for (int i = 0; i < transactionList.size(); i++) {
                 long id_origin = getIdCustomer(conn, transactionList.get(i).origin());
@@ -49,15 +52,38 @@ public class TransactionDAO {
                 ps.setBoolean(6, transactionList.get(i).isFraud());
                 ps.setBoolean(7, transactionList.get(i).isFlaggedFraud());
                 ps.addBatch();
-
-                if ((i + 1) % batchSize == 0 || i == transactionList.size() - 1) {
-                    ps.executeBatch();
-                    ps.clearBatch();
-                }
             }
 
+            ps.executeBatch();
+            ps.clearBatch();
             conn.commit();
         }
+    }
+
+    private void inserirOrigins(Connection conn, List<Transaction> transactionList) throws SQLException {
+        List<Customer> origins = new ArrayList<>();
+        transactionList
+            .forEach(transaction -> {
+                origins.add(new Customer(
+                    transaction.origin().name(),
+                    transaction.origin().oldBalance(),
+                    transaction.origin().newBalance()
+                ));
+            });
+        customerDAO.inserirLoteCustomer(conn, origins);
+    }
+
+    private void inserirRecipients(Connection conn, List<Transaction> transactionList) throws SQLException {
+        List<Customer> recipients = new ArrayList<>();
+        transactionList
+            .forEach(transaction -> {
+                recipients.add(new Customer(
+                    transaction.recipient().name(),
+                    transaction.recipient().oldBalance(),
+                    transaction.recipient().newBalance()
+                ));
+            });
+        customerDAO.inserirLoteCustomer(conn, recipients);
     }
 
     public void inserirTransaction(Connection conn, Transaction transaction) throws SQLException {
@@ -111,12 +137,6 @@ public class TransactionDAO {
 
     private long getIdCustomer(Connection conn, Customer customer) throws SQLException {
         long id = customerDAO.listarCustomer(conn, customer.name());
-        if (id == 0) {
-            id = customerDAO.inserirCustomer(conn, new Customer(
-                customer.name(),
-                customer.oldBalance(),
-                customer.newBalance()));
-        }
         if (id == 0) {
             throw new SQLException("Customer não encontrado.");
         }
