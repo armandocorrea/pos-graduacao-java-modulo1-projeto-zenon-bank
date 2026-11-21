@@ -10,11 +10,9 @@ import java.util.Optional;
 
 public class TransactionSQLRepository implements TransactionRepository {
 
-    private final ZenonConnection conn;
     private final TransactionDAO dao;
 
-    public TransactionSQLRepository(ZenonConnection conn, TransactionDAO dao) {
-        this.conn = conn;
+    public TransactionSQLRepository(TransactionDAO dao) {
         this.dao = dao;
     }
 
@@ -22,7 +20,7 @@ public class TransactionSQLRepository implements TransactionRepository {
     public Optional<Transaction> findByOriginName(String originName) {
         try {
             return Optional.ofNullable(
-                dao.listarTransaction(conn.zenonConnection(), originName));
+                dao.listarTransaction(ZenonConnection.getConnection(), originName));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -31,7 +29,7 @@ public class TransactionSQLRepository implements TransactionRepository {
     @Override
     public void save(Transaction transaction) {
         try {
-            dao.inserirTransaction(conn.zenonConnection(), transaction);
+            dao.inserirTransaction(ZenonConnection.getConnection(), transaction);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -40,7 +38,7 @@ public class TransactionSQLRepository implements TransactionRepository {
     @Override
     public void save(List<Transaction> transactions) {
         try {
-            dao.inserirLoteTransaction(conn.zenonConnection(), transactions);
+            dao.inserirLoteTransaction(ZenonConnection.getConnection(), transactions);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

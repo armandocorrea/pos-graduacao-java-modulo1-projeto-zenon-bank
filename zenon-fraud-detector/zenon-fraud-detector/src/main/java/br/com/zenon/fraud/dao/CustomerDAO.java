@@ -1,17 +1,37 @@
 package br.com.zenon.fraud.dao;
 
 import br.com.zenon.fraud.model.Customer;
+import br.com.zenon.fraud.model.Transaction;
 
 import java.sql.*;
+import java.util.List;
 
 public class CustomerDAO {
 
-    private static final String SQL_INSERT = "INSERT INTO CUSTOMER (name, oldBalance, newBalance) VALUES (?, ?, ?)";
+    private static final String SQL_INSERT = "INSERT IGNORE INTO CUSTOMER (name, oldBalance, newBalance) VALUES (?, ?, ?)";
     private static final String SQL_SELECT = """
                                                   SELECT id
                                                     FROM CUSTOMER
                                                    WHERE CUSTOMER.name = ?
                                              """;
+
+    public void inserirLoteCustomer(Connection conn, List<Customer> customerList) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
+
+            conn.setAutoCommit(false);
+
+            for (int i = 0; i < customerList.size(); i++) {
+                ps.setString(1, customerList.get(i).name());
+                ps.setBigDecimal(2, customerList.get(i).newBalance());
+                ps.setBigDecimal(3, customerList.get(i).oldBalance());
+                ps.addBatch();
+            }
+
+            ps.executeBatch();
+            ps.clearBatch();
+            conn.commit();
+        }
+    }
 
     public long inserirCustomer(Connection conn, Customer customer) throws SQLException {
         long id = 0;
